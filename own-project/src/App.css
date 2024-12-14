@@ -1,0 +1,128 @@
+/* Global Styles */
+body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(120deg, #f6d365, #fda085); /* Vibrant Gradient */
+    color: #333;
+    overflow-x: hidden;
+  }
+  
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  /* Navbar Styles */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: linear-gradient(120deg, #6a11cb, #2575fc); /* Blue-Purple Gradient */
+    padding: 15px 20px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .navbar-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    margin: 0;
+  }
+  
+  .nav-links {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .nav-link {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 10px 15px;
+    border-radius: 25px;
+    background: transparent;
+    transition: all 0.3s ease;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .nav-link:hover {
+    background: linear-gradient(120deg, #ff758c, #ff7eb3); /* Pink Gradient */
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0px 8px 15px rgba(255, 118, 178, 0.5);
+  }
+  
+  .nav-link.active-link {
+    background: linear-gradient(120deg, #43cea2, #185a9d); /* Green-Blue Gradient */
+    color: white;
+    transform: scale(1.1);
+  }
+  
+  /* Main Content Styles */
+  .main-content {
+    flex: 1;
+    margin: 20px;
+    padding: 30px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.5s ease;
+  }
+  
+  /* Footer Styles */
+  .footer {
+    background: linear-gradient(120deg, #ff758c, #ff7eb3); /* Pink Gradient */
+    text-align: center;
+    padding: 15px;
+    color: white;
+    font-weight: 500;
+    box-shadow: 0px -4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  .footer p {
+    margin: 0;
+    font-size: 14px;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .navbar {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .nav-links {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+  
+    .navbar-title {
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+  
+    .main-content {
+      margin: 10px;
+      padding: 20px;
+    }
+  }
+  

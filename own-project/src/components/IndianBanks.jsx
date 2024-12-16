@@ -1,44 +1,3 @@
-// import React, { useState, useEffect } from 'react';
-
-// const IndianBanks = () => {
-//   const [banks, setBanks] = useState([]);
-//   const [city, setCity] = useState('MUMBAI');
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     fetch(`https://indian-banks-api.vercel.app/api/banks?city=${city}`)
-//       .then((res) => res.json())
-//       .then((data) => {
-//         setBanks(data || []);
-//         setLoading(false);
-//       })
-//       .catch(() => setLoading(false));
-//   }, [city]);
-
-//   return (
-//     <div>
-//       <h1>Banks in {city}</h1>
-//       <input
-//         type="text"
-//         placeholder="Enter City"
-//         value={city}
-//         onChange={(e) => setCity(e.target.value.toUpperCase())}
-//       />
-//       {loading ? <p>Loading...</p> : (
-//         <ul>
-//           {banks.map((bank, index) => (
-//             <li key={index}>{bank.bank_name}</li>
-//           ))}
-//         </ul>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default IndianBanks;
-
-
-
 // import React, { useState, useEffect } from "react";
 // import "./IndianBanks.css";
 
@@ -113,3 +72,194 @@
 // };
 
 // export default IndianBanks;
+
+
+
+
+
+import React, { useState, useEffect } from "react";
+import "./IndianBanks.css";
+
+const IndianBanks = () => {
+  const [states, setStates] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [centers, setCenters] = useState([]);
+  const [branches, setBranches] = useState([]);
+  const [branchDetails, setBranchDetails] = useState(null);
+
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedCenter, setSelectedCenter] = useState("");
+  const [selectedBranch, setSelectedBranch] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Fetch data functions
+  const fetchData = async (url, setData, resetStates = []) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Failed to fetch data.");
+      const data = await response.json();
+      setData(data || []);
+      resetStates.forEach((reset) => reset([])); // Reset dependent states
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch states on mount
+  useEffect(() => {
+    fetchData("https://bank-apis.justinclicks.com/API/V1/STATE/", setStates);
+  }, []);
+
+  // Fetch districts when a state is selected
+  useEffect(() => {
+    if (selectedState) {
+      fetchData(
+        `https://bank-apis.justinclicks.com/API/V1/STATE/${selectedState}/`,
+        setDistricts,
+        [setCities, setCenters, setBranches, setBranchDetails]
+      );
+    }
+  }, [selectedState]);
+
+  // Fetch cities when a district is selected
+  useEffect(() => {
+    if (selectedDistrict) {
+      fetchData(
+        `https://bank-apis.justinclicks.com/API/V1/STATE/${selectedState}/${selectedDistrict}/`,
+        setCities,
+        [setCenters, setBranches, setBranchDetails]
+      );
+    }
+  }, [selectedDistrict]);
+
+  // Fetch centers when a city is selected
+  useEffect(() => {
+    if (selectedCity) {
+      fetchData(
+        `https://bank-apis.justinclicks.com/API/V1/STATE/${selectedState}/${selectedDistrict}/${selectedCity}/`,
+        setCenters,
+        [setBranches, setBranchDetails]
+      );
+    }
+  }, [selectedCity]);
+
+  // Fetch branches when a center is selected
+  useEffect(() => {
+    if (selectedCenter) {
+      fetchData(
+        `https://bank-apis.justinclicks.com/API/V1/STATE/${selectedState}/${selectedDistrict}/${selectedCity}/${selectedCenter}/`,
+        setBranches,
+        [setBranchDetails]
+      );
+    }
+  }, [selectedCenter]);
+
+  // Fetch branch details when a branch is selected
+  useEffect(() => {
+    if (selectedBranch) {
+      fetchData(
+        `https://bank-apis.justinclicks.com/API/V1/STATE/${selectedState}/${selectedDistrict}/${selectedCity}/${selectedCenter}/${selectedBranch}.json/`
+      );
+    }
+  }, [selectedBranch]);
+
+  return (
+    <div className="indian-banks-container">
+      <h1 className="title">🏦 Indian Banks</h1>
+      <p className="subtitle">Select State, District, City, Center, and Branch</p>
+
+      {error && <p className="error-text">{error}</p>}
+      {loading && <p className="loading-text">Loading...</p>}
+
+      {/* State Dropdown */}
+      <select
+        className="dropdown"
+        value={selectedState}
+        onChange={(e) => setSelectedState(e.target.value)}
+      >
+        <option value="">Select State</option>
+        {states.map((state, index) => (
+          <option key={index} value={state}>
+            {state}
+          </option>
+        ))}
+      </select>
+
+      {/* District Dropdown */}
+      {selectedState && (
+        <select
+          className="dropdown"
+          value={selectedDistrict}
+          onChange={(e) => setSelectedDistrict(e.target.value)}
+        >
+          <option value="">Select District</option>
+          {districts.map((district, index) => (
+            <option key={index} value={district}>
+              {district}
+            </option>
+          ))}
+        </select>
+      )}
+
+      {/* City Dropdown */}
+      {selectedDistrict && (
+        <select
+          className="dropdown"
+          value={selectedCity}
+          onChange={(e) => setSelectedCity(e.target.value)}
+        >
+          <option value="">Select City</option>
+          {cities.map((city, index) => (
+            <option key={index} value={city}>
+              {city}
+            </option>
+          ))}
+        </select>
+      )}
+
+      {/* Center Dropdown */}
+      {selectedCity && (
+        <select
+          className="dropdown"
+          value={selectedCenter}
+          onChange={(e) => setSelectedCenter(e.target.value)}
+        >
+          <option value="">Select Center</option>
+          {centers.map((center, index) => (
+            <option key={index} value={center}>
+              {center}
+            </option>
+          ))}
+        </select>
+      )}
+
+      {/* Branch Dropdown */}
+      {selectedCenter && (
+        <select
+          className="dropdown"
+          value={selectedBranch}
+          onChange={(e) => setSelectedBranch(e.target.value)}
+        >
+          <option value="">Select Branch</option>
+          {branches.map((branch, index) => (
+            <option key={index} value={branch.branch}>
+              {branch.branch}
+            </option>
+          ))}
+        </select>
+      )}
+
+    </div>
+  );
+};
+
+export default IndianBanks;

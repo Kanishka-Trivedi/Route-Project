@@ -1,4 +1,3 @@
-
 // import React, { useEffect, useState } from "react";
 // import "./Meals.css";
 
@@ -6,7 +5,7 @@
 //   const [meals, setMeals] = useState([]);
 //   const [loading, setLoading] = useState(true);
 //   const [error, setError] = useState(null);
-//   const [searchQuery, setSearchQuery] = useState(""); // State for search input
+//   const [searchQuery, setSearchQuery] = useState("");
 
 //   useEffect(() => {
 //     const fetchMeals = async () => {
@@ -29,7 +28,6 @@
 //     fetchMeals();
 //   }, []);
 
-//   // Filter meals based on the search query
 //   const filteredMeals = meals?.filter((meal) =>
 //     meal.strMeal.toLowerCase().includes(searchQuery.toLowerCase())
 //   );
@@ -38,10 +36,9 @@
 //     <div className="meals-container">
 //       <h1 className="meals-title">🍽️ Explore Global Meals</h1>
 //       <p className="meals-subtitle">
-//         Discover a world of flavors! Use the search bar to find your favorite dish.
+//         Discover delicious recipes from around the world. Search your favorites below!
 //       </p>
 
-//       {/* Search Bar */}
 //       <div className="search-bar-container">
 //         <input
 //           type="text"
@@ -64,14 +61,16 @@
 //                 alt={meal.strMeal}
 //                 className="meal-image"
 //               />
-//               <h2 className="meal-name">{meal.strMeal}</h2>
-//               <p className="meal-category">{meal.strCategory}</p>
-//               <button
-//                 className="meal-btn"
-//                 onClick={() => window.open(meal.strSource, "_blank")}
-//               >
-//                 View Recipe
-//               </button>
+//               <div className="meal-info">
+//                 <h2 className="meal-name">{meal.strMeal}</h2>
+//                 <p className="meal-category">{meal.strCategory}</p>
+//                 <button
+//                   className="meal-btn"
+//                   onClick={() => window.open(meal.strSource, "_blank")}
+//                 >
+//                   View Recipe
+//                 </button>
+//               </div>
 //             </div>
 //           ))
 //         ) : (
@@ -94,6 +93,8 @@ function Meals() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedMeal, setSelectedMeal] = useState(null); // Track selected meal
+  const [modalOpen, setModalOpen] = useState(false); // Track modal visibility
 
   useEffect(() => {
     const fetchMeals = async () => {
@@ -119,6 +120,16 @@ function Meals() {
   const filteredMeals = meals?.filter((meal) =>
     meal.strMeal.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const openModal = (meal) => {
+    setSelectedMeal(meal);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedMeal(null);
+    setModalOpen(false);
+  };
 
   return (
     <div className="meals-container">
@@ -154,9 +165,9 @@ function Meals() {
                 <p className="meal-category">{meal.strCategory}</p>
                 <button
                   className="meal-btn"
-                  onClick={() => window.open(meal.strSource, "_blank")}
+                  onClick={() => openModal(meal)}
                 >
-                  View Recipe
+                  View Details
                 </button>
               </div>
             </div>
@@ -165,6 +176,39 @@ function Meals() {
           <p className="no-results">No meals found. Try a different search term!</p>
         )}
       </div>
+
+      {modalOpen && selectedMeal && (
+        <div className="modal">
+          <div className="modal-content">
+            <button className="close-btn" onClick={closeModal}>
+              &times;
+            </button>
+            <h2 className="modal-title">{selectedMeal.strMeal}</h2>
+            <img
+              src={selectedMeal.strMealThumb}
+              alt={selectedMeal.strMeal}
+              className="modal-image"
+            />
+            <h3>Ingredients:</h3>
+            <ul className="ingredients-list">
+              {Array.from({ length: 20 }, (_, i) => i + 1).map((index) => {
+                const ingredient = selectedMeal[`strIngredient${index}`];
+                const measure = selectedMeal[`strMeasure${index}`];
+                return (
+                  ingredient && (
+                    <li key={index}>
+                      {measure} {ingredient}
+                    </li>
+                  )
+                );
+              })}
+            </ul>
+            <h3>Instructions:</h3>
+            <p className="modal-instructions">{selectedMeal.strInstructions}</p>
+          </div>
+          <div className="modal-overlay" onClick={closeModal}></div>
+        </div>
+      )}
     </div>
   );
 }

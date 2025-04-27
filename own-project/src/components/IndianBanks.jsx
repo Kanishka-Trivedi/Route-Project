@@ -97,7 +97,7 @@ const IndianBanks = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fetch data functions
+  // Function to fetch data
   const fetchData = async (url, setData, resetStates = []) => {
     setLoading(true);
     setError(null);
@@ -167,10 +167,20 @@ const IndianBanks = () => {
   useEffect(() => {
     if (selectedBranch) {
       fetchData(
-        `https://bank-apis.justinclicks.com/API/V1/STATE/${selectedState}/${selectedDistrict}/${selectedCity}/${selectedCenter}/${selectedBranch}.json/`
+        `https://bank-apis.justinclicks.com/API/V1/STATE/${selectedState}/${selectedDistrict}/${selectedCity}/${selectedCenter}/${selectedBranch}`,
+        setBranchDetails
       );
     }
   }, [selectedBranch]);
+
+  // Only display details when all options are selected
+  const canDisplayDetails =
+    selectedState &&
+    selectedDistrict &&
+    selectedCity &&
+    selectedCenter &&
+    selectedBranch &&
+    branchDetails;
 
   return (
     <div className="indian-banks-container">
@@ -250,14 +260,40 @@ const IndianBanks = () => {
           onChange={(e) => setSelectedBranch(e.target.value)}
         >
           <option value="">Select Branch</option>
-          {branches.map((branch, index) => (
-            <option key={index} value={branch.branch}>
-              {branch.branch}
-            </option>
-          ))}
+          {branches.length > 0 ? (
+            branches.map((branch, index) => (
+              <option key={index} value={branch}>
+                {branch.replace(".json", "")} {/* Clean branch name */}
+              </option>
+            ))
+          ) : (
+            <option value="">No branches available</option>
+          )}
         </select>
       )}
 
+      {/* Display Branch Details */}
+      {canDisplayDetails && (
+        <div className="branch-details">
+          <h2>Branch Details:</h2>
+          <p>ADDRESS :- {branchDetails.ADDRESS}</p>
+          <p>BANK :- {branchDetails.BANK}</p>
+          <p>BANKCODE :- {branchDetails.BANKCODE}</p>
+          <p>BRANCH :- {branchDetails.BRANCH}</p>
+          <p>CENTRE :- {branchDetails.CENTRE}</p>
+          <p>CITY :- {branchDetails.CITY}</p>
+          <p>CONTACT :- {branchDetails.CONTACT}</p>
+          <p>DISTRICT :- {branchDetails.DISTRICT}</p>
+          <p>IFSC :- {branchDetails.IFSC}</p>
+          <p>IMPS :- {branchDetails.IMPS}</p>
+          <p>MICR :- {branchDetails.MICR}</p>
+          <p>NEFT :- {branchDetails.NEFT == true ? "Yes" : "No"}</p>
+          <p>RTGS :- {branchDetails.RTGS == true ? "Yes" : "No"}</p>
+          <p>STATE :- {branchDetails.STATE}</p>
+          <p>SWIFT :- {branchDetails.SWIFT}</p>
+          <p>UPI :- {branchDetails.UPI == true ? "Yes" : "No"}</p> 
+        </div>
+      )}
     </div>
   );
 };

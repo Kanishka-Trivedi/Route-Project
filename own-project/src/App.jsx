@@ -41,6 +41,7 @@ import Meals from "./components/Meals";
 import Cocktails from "./components/Cocktails";
 import HarryPotter from "./components/HarryPotter";
 import IndianBanks from "./components/IndianBanks";
+import MongoDb from "./components/MongoDb";
 import "./App.css";
 
 function App() {
@@ -84,6 +85,15 @@ function App() {
           >
             Indian Banks
           </Link>
+
+          <Link
+            to="/mongoDb"
+            className={`nav-link ${
+              location.pathname === "/mongoDb" ? "active-link" : ""
+            }`}
+          >
+            MongoDb
+          </Link>
         </div>
       </nav>
 
@@ -94,6 +104,7 @@ function App() {
           <Route path="/cocktails" element={<Cocktails />} />
           <Route path="/harrypotter" element={<HarryPotter />} />
           <Route path="/indianbanks" element={<IndianBanks />} />
+          <Route path="/mongoDb" element={<MongoDb />} />
         </Routes>
       </main>
 

@@ -154,7 +154,7 @@
 
 
 import { useState, useEffect } from 'react';
-import "./Harrypotter.css";
+import "./HarryPotter.css";
 
 const Harrypotter = () => {
     const [language, setLanguage] = useState('en');
